@@ -35,7 +35,6 @@ public:
 
 };
 
-
 int Node::nextID =0;
 
 class Box{
@@ -45,7 +44,7 @@ public:
     int minX;
     int maxY;
     int minY;
-    const int boxSize = 10;
+    int boxSize = 10;
     Node node;
     Box(int xNum, int yNum){
         id = make_pair(xNum,yNum);
@@ -55,6 +54,18 @@ public:
         minY = yNum * boxSize;
         int x = rand()%(maxX-minX + 1) + minX;
         int y = rand()%(maxY-minY + 1) + minY;
+
+        node = Node(x,y);
+    }
+    Box(int xNum, int yNum, int boxSizeInX, int boxSizeInY){
+        id = make_pair(xNum,yNum);
+        maxX = (xNum + 1) * boxSizeInX;
+        minX = (xNum) * boxSizeInX;
+        maxY = (yNum + 1) * boxSizeInY;
+        minY = yNum * boxSizeInY;
+        int x = rand()%(maxX-minX + 1) + minX;
+        int y = rand()%(maxY-minY + 1) + minY;
+
 
         node = Node(x,y);
     }
@@ -72,17 +83,22 @@ public:
 
     Graph(int num){
         //generate range of graph
-        const int boxSize = 10;
-        maxX = num * boxSize;
+//        maxX = num * boxSize;
+//        minX = 0;
+//        maxY = num * boxSize;
+//        minY = 0;
         minX = 0;
-        maxY = num * boxSize;
+        maxX = 1900;
         minY = 0;
+        maxY = 936;
+        int boxX = maxX/num;
+        int boxY = maxY/num;
         //generate each box
         //num -> x,y = x = sqrt(num), y = sqrt(num)
         int limit = sqrt(num);
         for(int y = 0; y < limit; y++){
             for(int x = 0; x < limit; x++){
-                Box box = Box(x,y);
+                Box box = Box(x,y,boxX,boxY);
                 boxList.push_back(box);
             }
         }
@@ -250,6 +266,51 @@ public:
             boxList.at(i).node.printAngles();
         }
     }
+
+    int findAngleInNode(map<pair<int,int>,int> &map, int angle){
+        for(auto& it: map){
+            if(it.second == angle){
+                return it.first.first;
+            }
+        }
+        return -1;
+    }
+//    vector<Node> findCycleofAngles(int angle, int v, bool visited[], int root){
+//        visited[v] = true;
+//
+//    }
+//
+//    vector<Node> findShapesBrute(int angle){
+//        int numSides = 0;
+//        vector<Node> ans;
+//        switch(angle){
+//            case 90:
+//                cout << "rectangle" << endl;
+//                numSides = 4;
+//                break;
+//            case 108:
+//                cout << "pentagon" << endl;
+//                numSides = 5;
+//                break;
+//            case 120:
+//                cout << "hexagon" << endl;
+//                numSides = 6;
+//                break;
+//            case 135:
+//                cout << "octagon" << endl;
+//                numSides = 8;
+//                break;
+//        }
+//        for(int i = 0; i < boxList.size();i++){ //for every box
+//            //check node for angle
+//            map<pair<int,int>,int> map = boxList.at(i).node.angles;
+//            //search map for angle
+//            if(findAngleInNode(map, angle) > 0){
+//
+//            }
+//        }
+//
+//    }
 };
 
 int main() {
