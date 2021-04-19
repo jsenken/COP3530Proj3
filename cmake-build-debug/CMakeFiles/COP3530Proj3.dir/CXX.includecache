@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/jordansenken/workspace/UF/COP3530/project/COP3530Proj3/main.cpp
+iostream
+-
+map
+-
+vector
+-
+algorithm
+-
+math.h
+-
+
