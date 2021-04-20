@@ -217,17 +217,29 @@ public:
 //            cout << "node " << b << " has " << edgeList[b].size() << " edges" << endl;
             for(int m = 0; m < edgeList[b].size();m++){
                 Node a = edgeList[b].at(m);
-                int abX = (a.x - boxList.at(b).node.x);
-                int abY = (a.y - boxList.at(b).node.y);
+                int abX = (boxList.at(b).node.x -a.x );
+                int abY = (boxList.at(b).node.y - a.y);
                 for(int n = 0; n < edgeList[b].size();n++){
                     if(m != n){
                         Node c = edgeList[b].at(n);
-                        int bcX = (boxList.at(b).node.x - c.x);
-                        int bcY = (boxList.at(b).node.y - c.y);
+                        int bcX = (c.x -boxList.at(b).node.x );
+                        int bcY = (c.y -boxList.at(b).node.y);
                         float dot = (abX * bcX + abY * bcY);
                         float cross = (abX * bcY - abY * bcX);
                         float alpha = atan2(cross, dot);
-                        int angle = (int) floor(alpha * 180. / M_PI + 0.5);
+                        int angle = 180 - abs((int) floor(alpha * 180. / M_PI + 0.5));
+                        if(angle == 59 || angle == 61){
+                            angle = 60;
+                        }
+                        if(angle == 89 || angle == 91){
+                            angle = 90;
+                        }
+                        if(angle == 119 || angle == 121){
+                            angle = 120;
+                        }
+                        if(angle == 134 || angle == 136){
+                            angle = 135;
+                        }
                         boxList.at(b).node.angles[make_pair(a.id,c.id)] = angle;
                     }
                 }
@@ -274,19 +286,23 @@ public:
                         Node node0 = boxList.at(x + (y * sqrt(boxList.size()))).node;
                         Node node1 = boxList.at(x + (y * sqrt(boxList.size())) + 1).node;
                         Node node2 = boxList.at(x + (y * sqrt(boxList.size())) + sqrt(boxList.size())).node;
+//                        cout << node0.id << " " << node1.id << " " << node2.id << " " << endl;
                         for (const auto &entry: node0.angles) {
+//                            cout << node0.id << ") "<< entry.first.first << " -> " << entry.first.second << "=" << abs(entry.second) << endl;
                             if (entry.first.first == node1.id && entry.first.second == node2.id &&
                                 abs(entry.second) != 60) {
                                 shape = false;
                             }
                         }
                         for (const auto &entry: node1.angles) {
+//                            cout << node1.id << ") "<< entry.first.first << " -> " << entry.first.second << "=" << abs(entry.second) << endl;
                             if (entry.first.first == node0.id && entry.first.second == node2.id &&
                                 abs(entry.second) != 60) {
                                 shape = false;
                             }
                         }
                         for (const auto &entry: node2.angles) {
+//                            cout << node2.id << ") "<< entry.first.first << " -> " << entry.first.second << "=" << abs(entry.second) << endl;
                             if (entry.first.first == node0.id && entry.first.second == node1.id &&
                                 abs(entry.second) != 60) {
                                 shape = false;
@@ -511,62 +527,62 @@ public:
                         }
                     }
                 }
-                    for (int yh = 0; yh < sqrt(boxList.size())-2; yh++) { //for every row
-                        for (int xh = 0; xh < sqrt(boxList.size()) - 1; xh++) { //for every col
-                            bool shapeh = true;
-                            Node node0h = boxList.at(xh + (yh * sqrt(boxList.size()))).node;
-                            Node node1h = boxList.at(xh + (yh * sqrt(boxList.size())) + 1).node;
-                            Node node2h = boxList.at(xh + (yh * sqrt(boxList.size())) + sqrt(boxList.size())).node;
-                            Node node3h = boxList.at(xh + (yh * sqrt(boxList.size())) + sqrt(boxList.size()) + 1).node;
-                            Node node4h = boxList.at(xh + (yh * sqrt(boxList.size())) + sqrt(boxList.size()) +sqrt(boxList.size())).node;
-                            Node node5h = boxList.at(xh + (yh * sqrt(boxList.size())) + sqrt(boxList.size()) + sqrt(boxList.size()) +1).node;
-                            for (const auto &entry: node0h.angles) {
-                                if (entry.first.first == node1h.id && entry.first.second == node2h.id &&
-                                    abs(entry.second) != 120) {
-                                    shapeh = false;
-                                }
-                            }
-                            for (const auto &entry: node1h.angles) {
-                                if (entry.first.first == node0h.id && entry.first.second == node3h.id &&
-                                    abs(entry.second) != 120) {
-                                    shapeh = false;
-                                }
-                            }
-                            for (const auto &entry: node2h.angles) {
-                                if (entry.first.first == node0h.id && entry.first.second == node4h.id &&
-                                    abs(entry.second) != 120) {
-                                    shapeh = false;
-                                }
-                            }
-                            for (const auto &entry: node4h.angles) {
-                                if (entry.first.first == node2h.id && entry.first.second == node5h.id &&
-                                    abs(entry.second) != 120) {
-                                    shapeh = false;
-                                }
-                            }
-                            for (const auto &entry: node5h.angles) {
-                                if (entry.first.first == node4h.id && entry.first.second == node3h.id &&
-                                    abs(entry.second) != 120) {
-                                    shapeh = false;
-                                }
-                            }
-                            for (const auto &entry: node3h.angles) {
-                                if (entry.first.first == node5h.id && entry.first.second == node1h.id &&
-                                    abs(entry.second) != 120) {
-                                    shapeh = false;
-                                }
-                            }
-                            if (shapeh) {
-                                vector<Node> group;
-                                group.push_back(node0h);
-                                group.push_back(node1h);
-                                group.push_back(node2h);
-                                group.push_back(node3h);
-                                group.push_back(node4h);
-                                group.push_back(node5h);
-                                ans.push_back(group);
+                for (int yh = 0; yh < sqrt(boxList.size())-2; yh++) { //for every row
+                    for (int xh = 0; xh < sqrt(boxList.size()) - 1; xh++) { //for every col
+                        bool shapeh = true;
+                        Node node0h = boxList.at(xh + (yh * sqrt(boxList.size()))).node;
+                        Node node1h = boxList.at(xh + (yh * sqrt(boxList.size())) + 1).node;
+                        Node node2h = boxList.at(xh + (yh * sqrt(boxList.size())) + sqrt(boxList.size())).node;
+                        Node node3h = boxList.at(xh + (yh * sqrt(boxList.size())) + sqrt(boxList.size()) + 1).node;
+                        Node node4h = boxList.at(xh + (yh * sqrt(boxList.size())) + sqrt(boxList.size()) +sqrt(boxList.size())).node;
+                        Node node5h = boxList.at(xh + (yh * sqrt(boxList.size())) + sqrt(boxList.size()) + sqrt(boxList.size()) +1).node;
+                        for (const auto &entry: node0h.angles) {
+                            if (entry.first.first == node1h.id && entry.first.second == node2h.id &&
+                                abs(entry.second) != 120) {
+                                shapeh = false;
                             }
                         }
+                        for (const auto &entry: node1h.angles) {
+                            if (entry.first.first == node0h.id && entry.first.second == node3h.id &&
+                                abs(entry.second) != 120) {
+                                shapeh = false;
+                            }
+                        }
+                        for (const auto &entry: node2h.angles) {
+                            if (entry.first.first == node0h.id && entry.first.second == node4h.id &&
+                                abs(entry.second) != 120) {
+                                shapeh = false;
+                            }
+                        }
+                        for (const auto &entry: node4h.angles) {
+                            if (entry.first.first == node2h.id && entry.first.second == node5h.id &&
+                                abs(entry.second) != 120) {
+                                shapeh = false;
+                            }
+                        }
+                        for (const auto &entry: node5h.angles) {
+                            if (entry.first.first == node4h.id && entry.first.second == node3h.id &&
+                                abs(entry.second) != 120) {
+                                shapeh = false;
+                            }
+                        }
+                        for (const auto &entry: node3h.angles) {
+                            if (entry.first.first == node5h.id && entry.first.second == node1h.id &&
+                                abs(entry.second) != 120) {
+                                shapeh = false;
+                            }
+                        }
+                        if (shapeh) {
+                            vector<Node> group;
+                            group.push_back(node0h);
+                            group.push_back(node1h);
+                            group.push_back(node2h);
+                            group.push_back(node3h);
+                            group.push_back(node4h);
+                            group.push_back(node5h);
+                            ans.push_back(group);
+                        }
+                    }
                 }
                 break;
             case 135:
@@ -720,15 +736,15 @@ public:
                 }
                 break;
         }
-    return ans;
+        return ans;
     }
 };
 
 int main() {
     Graph *graph = new Graph(10000);
     vector<vector<Node>> ans =graph->findShapesBrute(60);
-//    if(ans.size() > 0)
-//        cout << ans.at(0).at(0).id << ans.at(0).at(1).id << ans.at(0).at(2).id << ans.at(0).at(3).id;
+    if(ans.size() > 0)
+        cout << ans.at(0).at(0).id << ans.at(0).at(1).id << ans.at(0).at(2).id;
 //    graph->printBoxList();
 //    graph->printNodeList();
 //    graph->printEdgeList();
@@ -736,3 +752,4 @@ int main() {
 
     return 0;
 }
+
