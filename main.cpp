@@ -60,13 +60,11 @@ public:
     Box(int xNum, int yNum, int boxSizeInX, int boxSizeInY){
         id = make_pair(xNum,yNum);
         maxX = (xNum + 1) * boxSizeInX;
-        minX = (xNum) * boxSizeInX;
+        minX = xNum * boxSizeInX;
         maxY = (yNum + 1) * boxSizeInY;
         minY = yNum * boxSizeInY;
         int x = rand()%(maxX-minX + 1) + minX;
         int y = rand()%(maxY-minY + 1) + minY;
-
-
         node = Node(x,y);
     }
 };
@@ -83,18 +81,14 @@ public:
 
     Graph(int num){
         //generate range of graph
-//        maxX = num * boxSize;
-//        minX = 0;
-//        maxY = num * boxSize;
-//        minY = 0;
         minX = 0;
         maxX = 1900;
         minY = 0;
         maxY = 936;
-        int boxX = maxX/num;
-        int boxY = maxY/num;
+        int boxX = maxX/sqrt(num);
+        int boxY = maxY/sqrt(num);
+        cout <<"box size " << boxX << "," << boxY << endl;
         //generate each box
-        //num -> x,y = x = sqrt(num), y = sqrt(num)
         int limit = sqrt(num);
         for(int y = 0; y < limit; y++){
             for(int x = 0; x < limit; x++){
@@ -267,58 +261,342 @@ public:
         }
     }
 
-    int findAngleInNode(map<pair<int,int>,int> &map, int angle){
-        for(auto& it: map){
-            if(it.second == angle){
-                return it.first.first;
-            }
+    vector<vector<Node>> findShapesBrute(int angle) {
+        int numSides = 0;
+        vector<vector<Node>> ans;
+        switch (angle) {
+            case 90:
+                cout << "rectangle" << endl;
+                numSides = 4;
+                for (int y = 0; y < sqrt(boxList.size()) - 1; y++) { //for every row
+                    for (int x = 0; x < sqrt(boxList.size()) - 1; x++) { //for every col
+                        bool shape = true;
+                        Node node0 = boxList.at(x + (y * sqrt(boxList.size()))).node;
+                        Node node1 = boxList.at(x + (y * sqrt(boxList.size())) + 1).node;
+                        Node node2 = boxList.at(x + (y * sqrt(boxList.size())) + sqrt(boxList.size())).node;
+                        Node node3 = boxList.at(x + (y * sqrt(boxList.size())) + sqrt(boxList.size()) + 1).node;
+                        for (const auto &entry: node0.angles) {
+                            if (entry.first.first == node1.id && entry.first.second == node2.id &&
+                                abs(entry.second) != 90) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node1.angles) {
+                            if (entry.first.first == node0.id && entry.first.second == node3.id &&
+                                abs(entry.second) != 90) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node2.angles) {
+                            if (entry.first.first == node0.id && entry.first.second == node3.id &&
+                                abs(entry.second) != 90) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node3.angles) {
+                            if (entry.first.first == node2.id && entry.first.second == node1.id &&
+                                abs(entry.second) != 90) {
+                                shape = false;
+                            }
+                        }
+                        if (shape) {
+                            vector<Node> group;
+                            group.push_back(node0);
+                            group.push_back(node1);
+                            group.push_back(node2);
+                            group.push_back(node3);
+                            ans.push_back(group);
+                        }
+                    }
+
+                }
+                break;
+            case 108:
+                cout << "pentagon" << endl;
+                numSides = 5;
+                break;
+            case 120:
+                cout << "hexagon" << endl;
+                numSides = 6;
+                for (int y = 0; y < sqrt(boxList.size()) - 1; y++) { //for every row
+                    for (int x = 0; x < sqrt(boxList.size()) - 2; x++) { //for every col
+                        bool shape = true;
+                        Node node0 = boxList.at(x + (y * sqrt(boxList.size()))).node;
+                        Node node1 = boxList.at(x + (y * sqrt(boxList.size())) + 1).node;
+                        Node node2 = boxList.at(x + (y * sqrt(boxList.size())) + 2).node;
+                        Node node3 = boxList.at(x + (y * sqrt(boxList.size())) + sqrt(boxList.size())).node;
+                        Node node4 = boxList.at(x + (y * sqrt(boxList.size())) + sqrt(boxList.size()) + 1).node;
+                        Node node5 = boxList.at(x + (y * sqrt(boxList.size())) + sqrt(boxList.size()) + 2).node;
+                        for (const auto &entry: node0.angles) {
+                            if (entry.first.first == node1.id && entry.first.second == node3.id &&
+                                abs(entry.second) != 120) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node1.angles) {
+                            if (entry.first.first == node0.id && entry.first.second == node2.id &&
+                                abs(entry.second) != 120) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node2.angles) {
+                            if (entry.first.first == node1.id && entry.first.second == node5.id &&
+                                abs(entry.second) != 120) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node3.angles) {
+                            if (entry.first.first == node0.id && entry.first.second == node4.id &&
+                                abs(entry.second) != 120) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node4.angles) {
+                            if (entry.first.first == node3.id && entry.first.second == node5.id &&
+                                abs(entry.second) != 120) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node5.angles) {
+                            if (entry.first.first == node4.id && entry.first.second == node2.id &&
+                                abs(entry.second) != 120) {
+                                shape = false;
+                            }
+                        }
+                        if (shape) {
+                            vector<Node> group;
+                            group.push_back(node0);
+                            group.push_back(node1);
+                            group.push_back(node2);
+                            group.push_back(node3);
+                            group.push_back(node4);
+                            group.push_back(node5);
+                            ans.push_back(group);
+                        }
+                    }
+                }
+                    for (int yh = 0; yh < sqrt(boxList.size())-2; yh++) { //for every row
+                        for (int xh = 0; xh < sqrt(boxList.size()) - 1; xh++) { //for every col
+                            bool shapeh = true;
+                            Node node0h = boxList.at(xh + (yh * sqrt(boxList.size()))).node;
+                            Node node1h = boxList.at(xh + (yh * sqrt(boxList.size())) + 1).node;
+                            Node node2h = boxList.at(xh + (yh * sqrt(boxList.size())) + sqrt(boxList.size())).node;
+                            Node node3h = boxList.at(xh + (yh * sqrt(boxList.size())) + sqrt(boxList.size()) + 1).node;
+                            Node node4h = boxList.at(xh + (yh * sqrt(boxList.size())) + sqrt(boxList.size()) +sqrt(boxList.size())).node;
+                            Node node5h = boxList.at(xh + (yh * sqrt(boxList.size())) + sqrt(boxList.size()) + sqrt(boxList.size()) +1).node;
+                            for (const auto &entry: node0h.angles) {
+                                if (entry.first.first == node1h.id && entry.first.second == node2h.id &&
+                                    abs(entry.second) != 120) {
+                                    shapeh = false;
+                                }
+                            }
+                            for (const auto &entry: node1h.angles) {
+                                if (entry.first.first == node0h.id && entry.first.second == node3h.id &&
+                                    abs(entry.second) != 120) {
+                                    shapeh = false;
+                                }
+                            }
+                            for (const auto &entry: node2h.angles) {
+                                if (entry.first.first == node0h.id && entry.first.second == node4h.id &&
+                                    abs(entry.second) != 120) {
+                                    shapeh = false;
+                                }
+                            }
+                            for (const auto &entry: node4h.angles) {
+                                if (entry.first.first == node2h.id && entry.first.second == node5h.id &&
+                                    abs(entry.second) != 120) {
+                                    shapeh = false;
+                                }
+                            }
+                            for (const auto &entry: node5h.angles) {
+                                if (entry.first.first == node4h.id && entry.first.second == node3h.id &&
+                                    abs(entry.second) != 120) {
+                                    shapeh = false;
+                                }
+                            }
+                            for (const auto &entry: node3h.angles) {
+                                if (entry.first.first == node5h.id && entry.first.second == node1h.id &&
+                                    abs(entry.second) != 120) {
+                                    shapeh = false;
+                                }
+                            }
+                            if (shapeh) {
+                                vector<Node> group;
+                                group.push_back(node0h);
+                                group.push_back(node1h);
+                                group.push_back(node2h);
+                                group.push_back(node3h);
+                                group.push_back(node4h);
+                                group.push_back(node5h);
+                                ans.push_back(group);
+                            }
+                        }
+                }
+                break;
+            case 135:
+                cout << "octagon" << endl;
+                numSides = 8;
+                for (int y = 0; y < sqrt(boxList.size()) - 1; y++) { //for every row
+                    for (int x = 0; x < sqrt(boxList.size()) - 3; x++) { //for every col
+                        bool shape = true;
+                        Node node0 = boxList.at(x + (y * sqrt(boxList.size()))).node;
+                        Node node1 = boxList.at(x + (y * sqrt(boxList.size())) + 1).node;
+                        Node node2 = boxList.at(x + (y * sqrt(boxList.size())) + 2).node;
+                        Node node3 = boxList.at(x + (y * sqrt(boxList.size())) + 3).node;
+                        Node node4 = boxList.at(x + (y * sqrt(boxList.size())) + sqrt(boxList.size())).node;
+                        Node node5 = boxList.at(x + (y * sqrt(boxList.size())) + sqrt(boxList.size()) + 1).node;
+                        Node node6 = boxList.at(x + (y * sqrt(boxList.size())) + sqrt(boxList.size()) + 2).node;
+                        Node node7 = boxList.at(x + (y * sqrt(boxList.size())) + sqrt(boxList.size()) + 3).node;
+                        for (const auto &entry: node0.angles) {
+                            if (entry.first.first == node1.id && entry.first.second == node4.id &&
+                                abs(entry.second) != 135) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node1.angles) {
+                            if (entry.first.first == node0.id && entry.first.second == node2.id &&
+                                abs(entry.second) != 135) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node2.angles) {
+                            if (entry.first.first == node1.id && entry.first.second == node3.id &&
+                                abs(entry.second) != 135) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node3.angles) {
+                            if (entry.first.first == node2.id && entry.first.second == node7.id &&
+                                abs(entry.second) != 135) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node4.angles) {
+                            if (entry.first.first == node0.id && entry.first.second == node5.id &&
+                                abs(entry.second) != 135) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node5.angles) {
+                            if (entry.first.first == node4.id && entry.first.second == node6.id &&
+                                abs(entry.second) != 135) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node6.angles) {
+                            if (entry.first.first == node5.id && entry.first.second == node7.id &&
+                                abs(entry.second) != 135) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node7.angles) {
+                            if (entry.first.first == node6.id && entry.first.second == node3.id &&
+                                abs(entry.second) != 135) {
+                                shape = false;
+                            }
+                        }
+                        if (shape) {
+                            vector<Node> group;
+                            group.push_back(node0);
+                            group.push_back(node1);
+                            group.push_back(node2);
+                            group.push_back(node3);
+                            group.push_back(node4);
+                            group.push_back(node5);
+                            group.push_back(node6);
+                            group.push_back(node7);
+                            ans.push_back(group);
+                        }
+                    }
+                }
+                for (int yh = 0; yh < sqrt(boxList.size())-3; yh++) { //for every row
+                    for (int xh = 0; xh < sqrt(boxList.size()) - 1; xh++) { //for every col
+                        bool shapeh = true;
+                        Node node0h = boxList.at(xh + (yh * sqrt(boxList.size()))).node;
+                        Node node1h = boxList.at(xh + (yh * sqrt(boxList.size())) + 1).node;
+                        Node node2h = boxList.at(xh + (yh * sqrt(boxList.size())) + sqrt(boxList.size())).node;
+                        Node node3h = boxList.at(xh + (yh * sqrt(boxList.size())) + sqrt(boxList.size()) + 1).node;
+                        Node node4h = boxList.at(xh + (yh * sqrt(boxList.size())) + sqrt(boxList.size()) +sqrt(boxList.size())).node;
+                        Node node5h = boxList.at(xh + (yh * sqrt(boxList.size())) + sqrt(boxList.size()) + sqrt(boxList.size()) +1).node;
+                        Node node6h = boxList.at(xh + (yh * sqrt(boxList.size())) + sqrt(boxList.size()) +sqrt(boxList.size())+ sqrt(boxList.size())).node;
+                        Node node7h = boxList.at(xh + (yh * sqrt(boxList.size())) + sqrt(boxList.size()) + sqrt(boxList.size())+ sqrt(boxList.size()) +1).node;
+                        for (const auto &entry: node0h.angles) {
+                            if (entry.first.first == node1h.id && entry.first.second == node2h.id &&
+                                abs(entry.second) != 135) {
+                                shapeh = false;
+                            }
+                        }
+                        for (const auto &entry: node1h.angles) {
+                            if (entry.first.first == node0h.id && entry.first.second == node3h.id &&
+                                abs(entry.second) != 135) {
+                                shapeh = false;
+                            }
+                        }
+                        for (const auto &entry: node2h.angles) {
+                            if (entry.first.first == node0h.id && entry.first.second == node4h.id &&
+                                abs(entry.second) != 135) {
+                                shapeh = false;
+                            }
+                        }
+                        for (const auto &entry: node4h.angles) {
+                            if (entry.first.first == node2h.id && entry.first.second == node6h.id &&
+                                abs(entry.second) != 135) {
+                                shapeh = false;
+                            }
+                        }
+                        for (const auto &entry: node6h.angles) {
+                            if (entry.first.first == node4h.id && entry.first.second == node7h.id &&
+                                abs(entry.second) != 135) {
+                                shapeh = false;
+                            }
+                        }
+                        for (const auto &entry: node7h.angles) {
+                            if (entry.first.first == node5h.id && entry.first.second == node6h.id &&
+                                abs(entry.second) != 135) {
+                                shapeh = false;
+                            }
+                        }
+                        for (const auto &entry: node5h.angles) {
+                            if (entry.first.first == node7h.id && entry.first.second == node3h.id &&
+                                abs(entry.second) != 135) {
+                                shapeh = false;
+                            }
+                        }
+                        for (const auto &entry: node3h.angles) {
+                            if (entry.first.first == node5h.id && entry.first.second == node1h.id &&
+                                abs(entry.second) != 135) {
+                                shapeh = false;
+                            }
+                        }
+                        if (shapeh) {
+                            vector<Node> group;
+                            group.push_back(node0h);
+                            group.push_back(node1h);
+                            group.push_back(node2h);
+                            group.push_back(node3h);
+                            group.push_back(node4h);
+                            group.push_back(node5h);
+                            group.push_back(node6h);
+                            group.push_back(node7h);
+                            ans.push_back(group);
+                        }
+                    }
+                }
+                break;
         }
-        return -1;
+    return ans;
     }
-//    vector<Node> findCycleofAngles(int angle, int v, bool visited[], int root){
-//        visited[v] = true;
-//
-//    }
-//
-//    vector<Node> findShapesBrute(int angle){
-//        int numSides = 0;
-//        vector<Node> ans;
-//        switch(angle){
-//            case 90:
-//                cout << "rectangle" << endl;
-//                numSides = 4;
-//                break;
-//            case 108:
-//                cout << "pentagon" << endl;
-//                numSides = 5;
-//                break;
-//            case 120:
-//                cout << "hexagon" << endl;
-//                numSides = 6;
-//                break;
-//            case 135:
-//                cout << "octagon" << endl;
-//                numSides = 8;
-//                break;
-//        }
-//        for(int i = 0; i < boxList.size();i++){ //for every box
-//            //check node for angle
-//            map<pair<int,int>,int> map = boxList.at(i).node.angles;
-//            //search map for angle
-//            if(findAngleInNode(map, angle) > 0){
-//
-//            }
-//        }
-//
-//    }
 };
 
 int main() {
-    Graph *graph = new Graph(9);
-    graph->printBoxList();
-    graph->printNodeList();
-    graph->printEdgeList();
-    graph->printAngles();
+    Graph *graph = new Graph(10000);
+    vector<vector<Node>> ans =graph->findShapesBrute(90);
+    if(ans.size() > 0)
+        cout << ans.at(0).at(0).id << ans.at(0).at(1).id << ans.at(0).at(2).id << ans.at(0).at(3).id;
+//    graph->printBoxList();
+//    graph->printNodeList();
+//    graph->printEdgeList();
+//    graph->printAngles();
 
     return 0;
 }
