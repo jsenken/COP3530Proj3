@@ -727,8 +727,8 @@ public:
 int main() {
     Graph *graph = new Graph(10000);
     vector<vector<Node>> ans =graph->findShapesBrute(60);
-    if(ans.size() > 0)
-        cout << ans.at(0).at(0).id << ans.at(0).at(1).id << ans.at(0).at(2).id << ans.at(0).at(3).id;
+//    if(ans.size() > 0)
+//        cout << ans.at(0).at(0).id << ans.at(0).at(1).id << ans.at(0).at(2).id << ans.at(0).at(3).id;
 //    graph->printBoxList();
 //    graph->printNodeList();
 //    graph->printEdgeList();
