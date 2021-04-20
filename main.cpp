@@ -265,6 +265,142 @@ public:
         int numSides = 0;
         vector<vector<Node>> ans;
         switch (angle) {
+            case 60:
+                cout << "triangle" << endl;
+                numSides = 3;
+                for (int y = 0; y < sqrt(boxList.size()) - 1; y++) { //for every row
+                    for (int x = 0; x < sqrt(boxList.size()) - 1; x++) { //for every col
+                        bool shape = true;
+                        Node node0 = boxList.at(x + (y * sqrt(boxList.size()))).node;
+                        Node node1 = boxList.at(x + (y * sqrt(boxList.size())) + 1).node;
+                        Node node2 = boxList.at(x + (y * sqrt(boxList.size())) + sqrt(boxList.size())).node;
+                        for (const auto &entry: node0.angles) {
+                            if (entry.first.first == node1.id && entry.first.second == node2.id &&
+                                abs(entry.second) != 60) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node1.angles) {
+                            if (entry.first.first == node0.id && entry.first.second == node2.id &&
+                                abs(entry.second) != 60) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node2.angles) {
+                            if (entry.first.first == node0.id && entry.first.second == node1.id &&
+                                abs(entry.second) != 60) {
+                                shape = false;
+                            }
+                        }
+                        if (shape) {
+                            vector<Node> group;
+                            group.push_back(node0);
+                            group.push_back(node1);
+                            group.push_back(node2);
+                            ans.push_back(group);
+                        }
+                    }
+                }
+                for (int y = 0; y < sqrt(boxList.size()) - 1; y++) { //for every row
+                    for (int x = 0; x < sqrt(boxList.size()) - 1; x++) { //for every col
+                        bool shape = true;
+                        Node node0 = boxList.at(x + (y * sqrt(boxList.size()))).node;
+                        Node node1 = boxList.at(x + (y * sqrt(boxList.size())) + 1).node;
+                        Node node2 = boxList.at(x + (y * sqrt(boxList.size())) + sqrt(boxList.size())+1).node;
+                        for (const auto &entry: node0.angles) {
+                            if (entry.first.first == node1.id && entry.first.second == node2.id &&
+                                abs(entry.second) != 60) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node1.angles) {
+                            if (entry.first.first == node0.id && entry.first.second == node2.id &&
+                                abs(entry.second) != 60) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node2.angles) {
+                            if (entry.first.first == node0.id && entry.first.second == node1.id &&
+                                abs(entry.second) != 60) {
+                                shape = false;
+                            }
+                        }
+                        if (shape) {
+                            vector<Node> group;
+                            group.push_back(node0);
+                            group.push_back(node1);
+                            group.push_back(node2);
+                            ans.push_back(group);
+                        }
+                    }
+                }
+                for (int y = 0; y < sqrt(boxList.size()) - 1; y++) { //for every row
+                    for (int x = 0; x < sqrt(boxList.size()) - 1; x++) { //for every col
+                        bool shape = true;
+                        Node node0 = boxList.at(x + (y * sqrt(boxList.size()))).node;
+                        Node node1 = boxList.at(x + (y * sqrt(boxList.size())) + sqrt(boxList.size())).node;
+                        Node node2 = boxList.at(x + (y * sqrt(boxList.size())) + sqrt(boxList.size())+1).node;
+                        for (const auto &entry: node0.angles) {
+                            if (entry.first.first == node1.id && entry.first.second == node2.id &&
+                                abs(entry.second) != 60) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node1.angles) {
+                            if (entry.first.first == node0.id && entry.first.second == node2.id &&
+                                abs(entry.second) != 60) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node2.angles) {
+                            if (entry.first.first == node0.id && entry.first.second == node1.id &&
+                                abs(entry.second) != 60) {
+                                shape = false;
+                            }
+                        }
+                        if (shape) {
+                            vector<Node> group;
+                            group.push_back(node0);
+                            group.push_back(node1);
+                            group.push_back(node2);
+                            ans.push_back(group);
+                        }
+                    }
+                }
+                for (int y = 0; y < sqrt(boxList.size()) - 1; y++) { //for every row
+                    for (int x = 1; x < sqrt(boxList.size()); x++) { //for every col
+                        bool shape = true;
+                        Node node0 = boxList.at(x + (y * sqrt(boxList.size()))).node;
+                        Node node1 = boxList.at(x + (y * sqrt(boxList.size())) + sqrt(boxList.size())-1).node;
+                        Node node2 = boxList.at(x + (y * sqrt(boxList.size())) + sqrt(boxList.size())).node;
+                        for (const auto &entry: node0.angles) {
+                            if (entry.first.first == node1.id && entry.first.second == node2.id &&
+                                abs(entry.second) != 60) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node1.angles) {
+                            if (entry.first.first == node0.id && entry.first.second == node2.id &&
+                                abs(entry.second) != 60) {
+                                shape = false;
+                            }
+                        }
+                        for (const auto &entry: node2.angles) {
+                            if (entry.first.first == node0.id && entry.first.second == node1.id &&
+                                abs(entry.second) != 60) {
+                                shape = false;
+                            }
+                        }
+                        if (shape) {
+                            vector<Node> group;
+                            group.push_back(node0);
+                            group.push_back(node1);
+                            group.push_back(node2);
+                            ans.push_back(group);
+                        }
+                    }
+                }
+                break;
             case 90:
                 cout << "rectangle" << endl;
                 numSides = 4;
@@ -590,7 +726,7 @@ public:
 
 int main() {
     Graph *graph = new Graph(10000);
-    vector<vector<Node>> ans =graph->findShapesBrute(90);
+    vector<vector<Node>> ans =graph->findShapesBrute(60);
     if(ans.size() > 0)
         cout << ans.at(0).at(0).id << ans.at(0).at(1).id << ans.at(0).at(2).id << ans.at(0).at(3).id;
 //    graph->printBoxList();
